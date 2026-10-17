@@ -49,14 +49,14 @@ static void msort_recursive(int *arr, int *tmp, const std::size_t n, const std::
 
     std::size_t half = n / 2;
 
-    // Sort the two halves as separate tasks, so idle threads can pick them up
+    // Fork: sort the first half as a new task, so an idle thread can pick it up,
+    // while this thread sorts the second half itself
 #pragma omp task
     msort_recursive(arr, tmp, half, threshold);
 
-#pragma omp task
     msort_recursive(arr + half, tmp + half, n - half, threshold);
 
-    // Both halves must be sorted before they can be merged
+    // Join: both halves must be sorted before they can be merged
 #pragma omp taskwait
 
     merge(arr, tmp, half, n);
