@@ -144,18 +144,43 @@ int main(int argc, char *argv[]) {
     // Main simulation loop
     for (int step = 0; step < Nt; step++) {
         
-        // TODO: (1/2) kick
+        // (1/2) kick
+        for (int i = 0; i < N; i++) {
+            vel[i][0] += acc[i][0] * dt / 2.0;
+            vel[i][1] += acc[i][1] * dt / 2.0;
+            vel[i][2] += acc[i][2] * dt / 2.0;
+        }
 
 
-        // TODO: Drift
+        // Drift
+        for (int i = 0; i < N; i++) {
+            pos[i][0] += vel[i][0] * dt;
+            pos[i][1] += vel[i][1] * dt;
+            pos[i][2] += vel[i][2] * dt;
+        }
       
 
-        // TODO: Ensure particles stay within the board limits
+        // Ensure particles stay within the board limits
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (pos[i][j] > board_size) {
+                    pos[i][j] = board_size;
+                }
+                if (pos[i][j] < -board_size) {
+                    pos[i][j] = -board_size;
+                }
+            }
+        }
 
         // Update accelerations
         getAcc(pos, mass, acc, N);
 
-        // TODO: (1/2) kick
+        // (1/2) kick
+        for (int i = 0; i < N; i++) {
+            vel[i][0] += acc[i][0] * dt / 2.0;
+            vel[i][1] += acc[i][1] * dt / 2.0;
+            vel[i][2] += acc[i][2] * dt / 2.0;
+        }
 
         // Update time
         t += dt;
